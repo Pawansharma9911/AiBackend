@@ -64,3 +64,5 @@ app.post("/test", async (req, res) => {
     res.status(500).send("Groq API error");
   }
 });
+export default app;
+
