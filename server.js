@@ -18,7 +18,7 @@ app.use(cors({
 
 app.use("/api", chatRoutes);
 
-// ✅ cache DB connection for serverless
+//  cache DB connection for serverless
 let isConnected = false;
 
 const connectDB = async () => {
@@ -34,15 +34,15 @@ const connectDB = async () => {
   }
 };
 
-// ✅ connect when function is invoked
+//  connect when function is invoked
 connectDB();
 
-// ✅ health check
+//  health check
 app.get("/", (req, res) => {
-  res.send("Backend is running 🚀");
+  res.send("Backend is running ");
 });
 
-// ❌ NO app.listen()
+//  NO app.listen()
 export default app;
 
 
