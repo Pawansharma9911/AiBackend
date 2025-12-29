@@ -1,16 +1,12 @@
-
 import express from "express";
-import "dotenv/config";
 import cors from "cors";
-import Groq from "groq-sdk";
-
 import mongoose from "mongoose";
 import chatRoutes from "./routes/chat.js";
 
 const app = express();
-const PORT = 8080;
 
 app.use(express.json());
+
 app.use(cors({
   origin: [
     "http://localhost:5173",
@@ -22,20 +18,32 @@ app.use(cors({
 
 app.use("/api", chatRoutes);
 
-const connectDB = async() => {
-    try {
-        await mongoose.connect(process.env.MONGODB_URL);
-        console.log("Connected with Database!");
-    } catch(err) {
-        console.log("Failed to connect with Db", err);
-    }
-}
-await connectDB();
-app.listen(PORT, () => {
-    console.log(`server running on ${PORT}`);
-     
+// ✅ cache DB connection for serverless
+let isConnected = false;
+
+const connectDB = async () => {
+  if (isConnected) return;
+
+  try {
+    await mongoose.connect(process.env.MONGODB_URL);
+    isConnected = true;
+    console.log("Connected with Database!");
+  } catch (err) {
+    console.error("MongoDB error:", err);
+    throw err;
+  }
+};
+
+// ✅ connect when function is invoked
+connectDB();
+
+// ✅ health check
+app.get("/", (req, res) => {
+  res.send("Backend is running 🚀");
 });
 
+// ❌ NO app.listen()
+export default app;
 
 
 
